@@ -1,0 +1,26 @@
+dataset:
+  path: data/processed/dataset.csv
+  label_column: Label
+  timestamp_column: Timestamp
+
+model:
+  type: xgboost
+  objective: binary:logistic
+  eval_metric: logloss
+
+drift:
+  method: ks
+  p_value: 0.05
+  min_drifted_features: 3
+
+memory:
+  samples_per_pattern: 4000
+  top_k: 2
+
+adaptation:
+  total_budget: 100000
+  recent_fraction: 0.5
+  historical_fraction: 0.5
+
+mlflow:
+  experiment_name: adaptive_ids

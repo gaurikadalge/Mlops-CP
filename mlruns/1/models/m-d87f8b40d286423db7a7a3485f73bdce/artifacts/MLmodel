@@ -1,0 +1,22 @@
+artifact_path: /Users/gaurik/Documents/Mlops_cp/adaptive-ids/mlruns/1/models/m-d87f8b40d286423db7a7a3485f73bdce/artifacts
+flavors:
+  python_function:
+    data: model.ubj
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.xgboost
+    python_version: 3.14.2
+  xgboost:
+    code: null
+    data: model.ubj
+    model_class: xgboost.sklearn.XGBClassifier
+    model_format: ubj
+    xgb_version: 3.4.1
+mlflow_version: 3.16.1
+model_id: m-d87f8b40d286423db7a7a3485f73bdce
+model_size_bytes: 213084
+model_uuid: m-d87f8b40d286423db7a7a3485f73bdce
+prompts: null
+run_id: 34682f6ad37c4c548dbfef7aaba407e9
+utc_time_created: '2026-09-26 11:32:23.022111'

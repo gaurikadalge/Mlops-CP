@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  mlflow-server:
+    image: python:3.11-slim
+    container_name: mlflow_tracking_server
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/app/mlruns
+    working_dir: /app
+    command: >
+      bash -c "pip install mlflow && mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow.db"
+
+  experiment-runner:
+    build: .
+    container_name: adaptive_ids_runner
+    volumes:
+      - .:/app
+      - ../cic_ids2017_inspired_synthetic.csv:/cic_ids2017_inspired_synthetic.csv
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow-server:5000
+    depends_on:
+      - mlflow-server
+    # Keep container alive to allow manual run, or let it run default command
+    command: python run_local_experiment.py
