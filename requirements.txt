@@ -5,3 +5,5 @@ scikit-learn
 xgboost
 mlflow
 pyyaml
+fastapi
+uvicorn

@@ -24,3 +24,18 @@ services:
       - mlflow-server
     # Keep container alive to allow manual run, or let it run default command
     command: python run_local_experiment.py
+
+  api-server:
+    build: .
+    container_name: adaptive_ids_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - ./mlruns:/app/mlruns
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow-server:5000
+    depends_on:
+      - mlflow-server
+      - experiment-runner
+    command: uvicorn src.pipeline.serve:app --host 0.0.0.0 --port 8000
