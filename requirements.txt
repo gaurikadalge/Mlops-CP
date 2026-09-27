@@ -7,3 +7,5 @@ mlflow
 pyyaml
 fastapi
 uvicorn
+plotly
+streamlit
