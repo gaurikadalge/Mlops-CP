@@ -1,0 +1,16 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Large Raw Datasets (>100MB GitHub limit)
+dataset/MachineLearningCVE/
+
+# MLflow run tracking
+mlruns/
+mlflow.db
+
+# Virtual environments
+venv/
+.venv/
+env/
