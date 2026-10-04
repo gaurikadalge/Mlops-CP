@@ -33,7 +33,7 @@ def load_and_prepare_data():
     df['Timestamp'] = pd.to_datetime(df['Timestamp'])
     df = df.sort_values(by='Timestamp').reset_index(drop=True)
     
-    hist_size = int(len(df) * 0.2)
+    hist_size = int(len(df) * 0.4)
     hist_df = df.iloc[:hist_size].copy()
     stream_df = df.iloc[hist_size:].copy()
     
@@ -68,9 +68,9 @@ def load_and_prepare_data():
     baseline_hist_f1 = evaluate_performance(hist_test['Label'], baseline_hist_pred)['f1_score']
     
     stream_df_clean = stream_df.drop(columns=['Attack Type'])
-    windows = create_temporal_windows(stream_df_clean, window_size=5000, label_column='Label', timestamp_column='Timestamp')
+    windows = create_temporal_windows(stream_df_clean, window_size=10000, label_column='Label', timestamp_column='Timestamp')
     
-    reference_window_df = X_init.tail(5000)
+    reference_window_df = X_init.tail(10000)
     
     return windows, baseline_model, baseline_hist_f1, memory_patterns, memory_data_map, historical_pool, hist_test, feature_cols, reference_window_df
 

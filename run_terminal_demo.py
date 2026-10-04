@@ -35,7 +35,7 @@ def main():
         df['Timestamp'] = pd.to_datetime(df['Timestamp'])
         df = df.sort_values(by='Timestamp').reset_index(drop=True)
         
-        hist_size = int(len(df) * 0.2)
+        hist_size = int(len(df) * 0.4)
         hist_df = df.iloc[:hist_size].copy()
         stream_df = df.iloc[hist_size:].copy()
         
@@ -78,9 +78,9 @@ def main():
     console.print("\n[bold]Simulating Data Stream...[/bold]\n")
     
     stream_df_clean = stream_df.drop(columns=['Attack Type'])
-    windows = create_temporal_windows(stream_df_clean, window_size=5000, label_column='Label', timestamp_column='Timestamp')
+    windows = create_temporal_windows(stream_df_clean, window_size=10000, label_column='Label', timestamp_column='Timestamp')
     
-    reference_window_df = X_init.tail(5000)
+    reference_window_df = X_init.tail(10000)
     total_budget = 4000 
     
     for i, window in enumerate(windows):
