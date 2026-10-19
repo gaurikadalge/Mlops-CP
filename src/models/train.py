@@ -7,8 +7,7 @@ def train_xgboost(X_train: pd.DataFrame, y_train: pd.Series, config: Dict[str, A
     if config is None:
         config = {
             'objective': 'binary:logistic',
-            'eval_metric': 'logloss',
-            'use_label_encoder': False
+            'eval_metric': 'logloss'
         }
         
     model = xgb.XGBClassifier(**config)

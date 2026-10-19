@@ -9,3 +9,5 @@ fastapi
 uvicorn
 plotly
 streamlit
+prometheus-client
+shap

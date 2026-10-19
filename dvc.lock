@@ -1,0 +1,81 @@
+schema: '2.0'
+stages:
+  validate:
+    cmd: python3 src/pipeline/validate_data.py --data-path 
+      dataset/cic_ids2017_inspired_synthetic.csv --output 
+      outputs/data_validation_report.json
+    deps:
+    - path: dataset/cic_ids2017_inspired_synthetic.csv
+      hash: md5
+      md5: 066851ed77ad375fdedca04c868d9460
+      size: 2110649
+    - path: src/pipeline/validate_data.py
+      hash: md5
+      md5: ad701cccc6b5076d2a937be787234af8
+      size: 3062
+    outs:
+    - path: outputs/data_validation_report.json
+      hash: md5
+      md5: 97adb2bdd4b819abac115e6124f99cfd
+      size: 405
+  preprocess:
+    cmd: python3 src/pipeline/preprocess_stage.py --data-path 
+      dataset/cic_ids2017_inspired_synthetic.csv --output-memory 
+      outputs/historical_memory.json --output-meta 
+      outputs/preprocessing_metadata.json
+    deps:
+    - path: dataset/cic_ids2017_inspired_synthetic.csv
+      hash: md5
+      md5: 066851ed77ad375fdedca04c868d9460
+      size: 2110649
+    - path: outputs/data_validation_report.json
+      hash: md5
+      md5: 97adb2bdd4b819abac115e6124f99cfd
+      size: 405
+    - path: src/memory/build_memory.py
+      hash: md5
+      md5: 4b38c49e344765fddf9276493059c429
+      size: 2040
+    - path: src/pipeline/preprocess_stage.py
+      hash: md5
+      md5: a9651aa7614b405934f3bd8e635e0d34
+      size: 2746
+    - path: src/preprocessing/loader.py
+      hash: md5
+      md5: 20f2562aa3805b98ba851cc6d9812220
+      size: 3095
+    outs:
+    - path: outputs/historical_memory.json
+      hash: md5
+      md5: f4995b00379e2a5e4f89925057bcc89e
+      size: 168
+    - path: outputs/preprocessing_metadata.json
+      hash: md5
+      md5: f8fc5e99dd8f693862dbfe1098949822
+      size: 354
+  evaluate:
+    cmd: python3 src/pipeline/evaluate_stage.py --data-path 
+      dataset/cic_ids2017_inspired_synthetic.csv --output-metrics 
+      outputs/evaluation_metrics.json
+    deps:
+    - path: dataset/cic_ids2017_inspired_synthetic.csv
+      hash: md5
+      md5: 066851ed77ad375fdedca04c868d9460
+      size: 2110649
+    - path: outputs/preprocessing_metadata.json
+      hash: md5
+      md5: f8fc5e99dd8f693862dbfe1098949822
+      size: 354
+    - path: run_local_experiment.py
+      hash: md5
+      md5: 6f37ac958ecc96af93f37fe02000ad2c
+      size: 12964
+    - path: src/pipeline/evaluate_stage.py
+      hash: md5
+      md5: 57d95ee879636b46ba80de0363c167db
+      size: 1642
+    outs:
+    - path: outputs/evaluation_metrics.json
+      hash: md5
+      md5: b882c1c1a5c779962dd972b2bb2e093c
+      size: 3048

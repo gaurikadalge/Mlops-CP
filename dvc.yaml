@@ -1,0 +1,31 @@
+stages:
+  validate:
+    cmd: python3 src/pipeline/validate_data.py --data-path dataset/cic_ids2017_inspired_synthetic.csv --output outputs/data_validation_report.json
+    deps:
+      - dataset/cic_ids2017_inspired_synthetic.csv
+      - src/pipeline/validate_data.py
+    outs:
+      - outputs/data_validation_report.json
+
+  preprocess:
+    cmd: python3 src/pipeline/preprocess_stage.py --data-path dataset/cic_ids2017_inspired_synthetic.csv --output-memory outputs/historical_memory.json --output-meta outputs/preprocessing_metadata.json
+    deps:
+      - dataset/cic_ids2017_inspired_synthetic.csv
+      - outputs/data_validation_report.json
+      - src/pipeline/preprocess_stage.py
+      - src/preprocessing/loader.py
+      - src/memory/build_memory.py
+    outs:
+      - outputs/historical_memory.json
+      - outputs/preprocessing_metadata.json
+
+  evaluate:
+    cmd: python3 src/pipeline/evaluate_stage.py --data-path dataset/cic_ids2017_inspired_synthetic.csv --output-metrics outputs/evaluation_metrics.json
+    deps:
+      - dataset/cic_ids2017_inspired_synthetic.csv
+      - outputs/preprocessing_metadata.json
+      - src/pipeline/evaluate_stage.py
+      - run_local_experiment.py
+    metrics:
+      - outputs/evaluation_metrics.json:
+          cache: false

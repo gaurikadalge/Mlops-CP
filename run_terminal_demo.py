@@ -29,7 +29,11 @@ def main():
     console.print(Panel.fit("[bold blue]Adaptive Historical Memory for Drift-Aware IDS[/bold blue]\n[italic]Executing Final Demonstration (Section 48)[/italic]", border_style="blue"))
     
     with console.status("[bold green]Loading dataset and setting up environments...") as status:
-        data_path = "../cic_ids2017_inspired_synthetic.csv"
+        data_path = "dataset/cic_ids2017_inspired_synthetic.csv"
+        if not os.path.exists(data_path):
+            data_path = "cic_ids2017_inspired_synthetic.csv"
+        if not os.path.exists(data_path):
+            data_path = "../cic_ids2017_inspired_synthetic.csv"
         df = pd.read_csv(data_path)
         
         df['Timestamp'] = pd.to_datetime(df['Timestamp'])
@@ -93,70 +97,78 @@ def main():
         drift_result = detect_drift(reference_window_df, window.X)
         if drift_result["drift_detected"]:
             console.print(f"[ALERT] [bold red]DRIFT DETECTED![/bold red] Score: {drift_result['drift_score']:.4f}")
-            current_profile = profile_pattern(window.X, "current", feature_cols)
             
-            # Show Pattern Similarity (Section 48 mockup)
+            # Split window chronologically: 60% adaptation, 40% forward evaluation
+            from src.preprocessing.loader import split_temporal_window
+            adapt_window, eval_window = split_temporal_window(window, train_ratio=0.6)
+            
+            # Show Pattern Similarity with empirical Wasserstein distance
             from src.memory.retrieve import retrieve_patterns
-            all_patterns = retrieve_patterns(current_profile, memory_patterns, top_k=len(memory_patterns))
+            all_patterns = retrieve_patterns(
+                adapt_window.X, memory_patterns, top_k=len(memory_patterns), memory_data_map=memory_data_map
+            )
             
-            sim_table = Table(title="Historical Pattern Similarity", box=box.SIMPLE)
+            sim_table = Table(title="Historical Pattern Similarity (Wasserstein Distance)", box=box.SIMPLE)
             sim_table.add_column("Pattern", style="cyan")
-            sim_table.add_column("Distance", style="magenta")
+            sim_table.add_column("Wasserstein Distance", style="magenta")
             
             for pat, dist in all_patterns:
                 sim_table.add_row(pat, f"{dist:.4f}")
             console.print(sim_table)
             
             console.print(f"Top-K = 2")
-            console.print(f"Recent:       2,000")
-            console.print(f"Historical:   2,000")
-            console.print(f"Total:        4,000\n")
+            console.print(f"Recent Budget:     {int(total_budget * 0.5):,}")
+            console.print(f"Historical Budget: {int(total_budget * 0.5):,}")
+            console.print(f"Total Budget:      {total_budget:,}\n")
             
-            # S2: Recent Only
-            s2_model = adapt_recent_only(window)
-            s2_recent_pred = predict_xgboost(s2_model, window.X)
+            # S2: Recent Only (Enforcing total_budget)
+            start_s2 = time.time()
+            s2_model = adapt_recent_only(adapt_window, total_budget=total_budget)
+            time_s2 = time.time() - start_s2
+            s2_recent_pred = predict_xgboost(s2_model, eval_window.X)
             s2_hist_pred = predict_xgboost(s2_model, hist_test[feature_cols])
             s2_metrics = {
-                'Recent F1': evaluate_performance(window.y, s2_recent_pred)['f1_score'],
+                'Recent F1': evaluate_performance(eval_window.y, s2_recent_pred)['f1_score'],
                 'Historical F1': evaluate_performance(hist_test['Label'], s2_hist_pred)['f1_score'],
+                'Training Time': time_s2
             }
             s2_metrics['Forgetting'] = baseline_hist_f1 - s2_metrics['Historical F1']
             
             # S3: Random Replay
             start_s3 = time.time()
-            s3_model = adapt_random_replay(window, historical_pool, total_budget, 0.5)
+            s3_model = adapt_random_replay(adapt_window, historical_pool, total_budget, 0.5)
             time_s3 = time.time() - start_s3
-            s3_recent_pred = predict_xgboost(s3_model, window.X)
+            s3_recent_pred = predict_xgboost(s3_model, eval_window.X)
             s3_hist_pred = predict_xgboost(s3_model, hist_test[feature_cols])
             s3_metrics = {
-                'Recent F1': evaluate_performance(window.y, s3_recent_pred)['f1_score'],
+                'Recent F1': evaluate_performance(eval_window.y, s3_recent_pred)['f1_score'],
                 'Historical F1': evaluate_performance(hist_test['Label'], s3_hist_pred)['f1_score'],
                 'Training Time': time_s3
             }
             s3_metrics['Forgetting'] = baseline_hist_f1 - s3_metrics['Historical F1']
             
-            # S4: Pattern Replay
+            # S4: Pattern Replay with Wasserstein Retrieval
             start_s4 = time.time()
-            s4_model = adapt_pattern_replay(window, current_profile, memory_patterns, memory_data_map, total_budget, 0.5, top_k=2)
+            s4_model = adapt_pattern_replay(adapt_window, adapt_window.X, memory_patterns, memory_data_map, total_budget, 0.5, top_k=2)
             time_s4 = time.time() - start_s4
-            s4_recent_pred = predict_xgboost(s4_model, window.X)
+            s4_recent_pred = predict_xgboost(s4_model, eval_window.X)
             s4_hist_pred = predict_xgboost(s4_model, hist_test[feature_cols])
             s4_metrics = {
-                'Recent F1': evaluate_performance(window.y, s4_recent_pred)['f1_score'],
+                'Recent F1': evaluate_performance(eval_window.y, s4_recent_pred)['f1_score'],
                 'Historical F1': evaluate_performance(hist_test['Label'], s4_hist_pred)['f1_score'],
                 'Training Time': time_s4
             }
             s4_metrics['Forgetting'] = baseline_hist_f1 - s4_metrics['Historical F1']
             
             # Results Table
-            res_table = Table(title="Retraining Results", box=box.ROUNDED)
+            res_table = Table(title="Retraining Results (Unseen Forward Evaluation)", box=box.ROUNDED)
             res_table.add_column("Strategy")
             res_table.add_column("Recent F1", justify="right")
             res_table.add_column("Historical F1", justify="right")
             res_table.add_column("Forgetting", justify="right")
             res_table.add_column("Time (s)", justify="right")
             
-            res_table.add_row("Recent-Only (S2)", f"{s2_metrics['Recent F1']:.4f}", f"{s2_metrics['Historical F1']:.4f}", f"{s2_metrics['Forgetting']:.4f}", "-")
+            res_table.add_row("Recent-Only (S2)", f"{s2_metrics['Recent F1']:.4f}", f"{s2_metrics['Historical F1']:.4f}", f"{s2_metrics['Forgetting']:.4f}", f"{s2_metrics['Training Time']:.2f}")
             res_table.add_row("Random Replay (S3)", f"{s3_metrics['Recent F1']:.4f}", f"{s3_metrics['Historical F1']:.4f}", f"{s3_metrics['Forgetting']:.4f}", f"{s3_metrics['Training Time']:.2f}")
             res_table.add_row("Pattern Replay (S4)", f"{s4_metrics['Recent F1']:.4f}", f"{s4_metrics['Historical F1']:.4f}", f"{s4_metrics['Forgetting']:.4f}", f"{s4_metrics['Training Time']:.2f}")
             

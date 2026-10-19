@@ -1,0 +1,17 @@
+{
+  "dataset_path": "dataset/cic_ids2017_inspired_synthetic.csv",
+  "total_records": 25000,
+  "baseline_size": 7500,
+  "streaming_size": 17500,
+  "memory_summary": {
+    "num_attack_types_stored": 2,
+    "attack_types": [
+      "DoS Hulk",
+      "PortScan"
+    ],
+    "sample_counts_per_attack": {
+      "DoS Hulk": 500,
+      "PortScan": 500
+    }
+  }
+}

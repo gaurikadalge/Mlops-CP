@@ -61,3 +61,33 @@ def create_temporal_windows(df: pd.DataFrame, window_size: int, label_column: st
         ))
         
     return windows
+
+
+def split_temporal_window(window: Window, train_ratio: float = 0.6) -> Tuple[Window, Window]:
+    """
+    Splits a Window strictly chronologically into an adaptation (training) slice
+    and an evaluation (unseen forward testing) slice.
+    
+    Guarantees:
+    - Zero future data leakage into the adaptation split.
+    - Zero evaluation on records used for fitting.
+    """
+    n = len(window.X)
+    split_idx = int(n * train_ratio)
+    
+    adapt_window = Window(
+        id=f"{window.id}_adapt",
+        X=window.X.iloc[:split_idx].copy().reset_index(drop=True),
+        y=window.y.iloc[:split_idx].copy().reset_index(drop=True),
+        timestamp_start=window.timestamp_start,
+        timestamp_end=None
+    )
+    eval_window = Window(
+        id=f"{window.id}_eval",
+        X=window.X.iloc[split_idx:].copy().reset_index(drop=True),
+        y=window.y.iloc[split_idx:].copy().reset_index(drop=True),
+        timestamp_start=None,
+        timestamp_end=window.timestamp_end
+    )
+    return adapt_window, eval_window
+

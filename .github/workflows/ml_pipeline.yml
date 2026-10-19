@@ -7,25 +7,53 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
+  ci-pipeline:
+    name: Test, Invariant Validation & Smoke Test
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout Code Repository
+      uses: actions/checkout@v4
     
     - name: Set up Python 3.11
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
+        cache: 'pip'
         
-    - name: Install dependencies
+    - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pytest-cov
+        pip install pytest pytest-cov dvc
         pip install -r requirements.txt
         
-    - name: Run Unit Tests
+    - name: Run Full Unit & Integration Test Suite
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+        MLFLOW_TRACKING_URI: sqlite:///mlflow_ci.db
+      run: |
+        pytest tests/ -v --cov=src/ --cov-report=term-missing
+        
+    - name: Validate Core Research Invariants (Budget Equality & Leak-Free Splits)
       env:
         PYTHONPATH: ${{ github.workspace }}
       run: |
-        pytest tests/ -v --cov=src/
+        pytest tests/test_replay.py tests/test_evaluation.py -v
+        
+    - name: Run Synthetic Data End-to-End Smoke Test
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+        MLFLOW_TRACKING_URI: sqlite:///mlflow_ci.db
+      run: |
+        python run_local_experiment.py
+        
+    - name: Validate DVC Pipeline Definition
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+      run: |
+        dvc dag
+        
+    - name: Validate Docker Compose Configuration & Build Image
+      run: |
+        docker compose config
+        docker compose build api-server

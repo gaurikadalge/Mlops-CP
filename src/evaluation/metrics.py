@@ -1,29 +1,51 @@
 import numpy as np
-from sklearn.metrics import f1_score, confusion_matrix
+from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score, confusion_matrix
 from typing import Dict, Any
+
 
 def evaluate_performance(y_true: np.ndarray, y_pred: np.ndarray) -> Dict[str, float]:
     """
-    Evaluates basic classification performance.
+    Evaluates classification performance including F1, FPR, Precision, Recall, and Accuracy.
     """
-    f1 = float(f1_score(y_true, y_pred, zero_division=0))
-    
+    y_true_arr = np.asarray(y_true).astype(int)
+    y_pred_arr = np.asarray(y_pred).astype(int)
+
+    f1 = float(f1_score(y_true_arr, y_pred_arr, zero_division=0))
+    prec = float(precision_score(y_true_arr, y_pred_arr, zero_division=0))
+    rec = float(recall_score(y_true_arr, y_pred_arr, zero_division=0))
+    acc = float(accuracy_score(y_true_arr, y_pred_arr))
+
     # Calculate False Positive Rate
-    cm = confusion_matrix(y_true, y_pred)
+    cm = confusion_matrix(y_true_arr, y_pred_arr)
     if cm.shape == (2, 2):
         tn, fp, fn, tp = cm.ravel()
-        fpr = fp / (fp + tn) if (fp + tn) > 0 else 0.0
-    else:
-        # Handle edge cases where only one class is present in y_true
+        fpr = float(fp / (fp + tn)) if (fp + tn) > 0 else 0.0
+    elif cm.shape == (1, 1):
+        # Single class case
         fpr = 0.0
-        
+        tn, fp, fn, tp = int(cm[0, 0]), 0, 0, 0
+    else:
+        fpr = 0.0
+        tn, fp, fn, tp = 0, 0, 0, 0
+
     return {
         "f1_score": f1,
-        "fpr": fpr
+        "fpr": fpr,
+        "precision": prec,
+        "recall": rec,
+        "accuracy": acc,
+        "tp": int(tp),
+        "fp": int(fp),
+        "tn": int(tn),
+        "fn": int(fn)
     }
+
 
 def calculate_forgetting(f1_before: float, f1_after: float) -> float:
     """
-    Calculates forgetting on historical data after adaptation.
+    Calculates forgetting on historical data after adaptation:
+    Forgetting = F1_before - F1_after
+    Positive values mean the model forgot historical attack patterns.
     """
-    return f1_before - f1_after
+    return float(f1_before - f1_after)
+

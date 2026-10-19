@@ -1,29 +1,15 @@
-version: '3.8'
-
 services:
   mlflow-server:
     image: python:3.11-slim
-    container_name: mlflow_tracking_server
+    container_name: adaptive_ids_mlflow
     ports:
-      - "5000:5000"
-    volumes:
-      - ./mlruns:/app/mlruns
-    working_dir: /app
-    command: >
-      bash -c "pip install mlflow && mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow.db"
-
-  experiment-runner:
-    build: .
-    container_name: adaptive_ids_runner
+      - "5001:5000"
     volumes:
       - .:/app
-      - ../cic_ids2017_inspired_synthetic.csv:/cic_ids2017_inspired_synthetic.csv
-    environment:
-      - MLFLOW_TRACKING_URI=http://mlflow-server:5000
-    depends_on:
-      - mlflow-server
-    # Keep container alive to allow manual run, or let it run default command
-    command: python run_local_experiment.py
+    working_dir: /app
+    command: >
+      bash -c "pip install mlflow && mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///app/mlflow.db --default-artifact-root /app/mlruns"
+    restart: unless-stopped
 
   api-server:
     build: .
@@ -32,10 +18,75 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
-      - ./mlruns:/app/mlruns
+    environment:
+      - MLFLOW_TRACKING_URI=sqlite:////app/mlflow.db
+    depends_on:
+      - mlflow-server
+    command: uvicorn src.pipeline.serve:app --host 0.0.0.0 --port 8000
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: adaptive_ids_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+    depends_on:
+      - api-server
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: adaptive_ids_grafana
+    ports:
+      - "3002:3000"
+
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./configs/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./configs/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./configs/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+  experiment-runner:
+    build: .
+    container_name: adaptive_ids_runner
+    profiles: ["experiment"]
+    volumes:
+      - .:/app
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow-server:5000
     depends_on:
       - mlflow-server
-      - experiment-runner
-    command: uvicorn src.pipeline.serve:app --host 0.0.0.0 --port 8000
+    command: python run_local_experiment.py
+
+  airflow-standalone:
+    image: apache/airflow:2.8.1-python3.11
+    container_name: adaptive_ids_airflow
+    profiles: ["airflow"]
+    ports:
+      - "8088:8080"
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
+      - PYTHONPATH=/opt/airflow
+      - MLFLOW_TRACKING_URI=http://mlflow-server:5000
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - ./dataset:/opt/airflow/dataset
+      - ./mlruns:/opt/airflow/mlruns
+    command: standalone
+    depends_on:
+      - mlflow-server
+

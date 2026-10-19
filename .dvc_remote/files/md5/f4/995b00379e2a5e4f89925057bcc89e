@@ -1,0 +1,11 @@
+{
+  "num_attack_types_stored": 2,
+  "attack_types": [
+    "DoS Hulk",
+    "PortScan"
+  ],
+  "sample_counts_per_attack": {
+    "DoS Hulk": 500,
+    "PortScan": 500
+  }
+}

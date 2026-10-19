@@ -1,0 +1,20 @@
+{
+  "dataset_path": "dataset/cic_ids2017_inspired_synthetic.csv",
+  "dataset_type": "synthetic_benchmark",
+  "total_records": 25000,
+  "total_columns": 6,
+  "null_values_count": 0,
+  "is_valid": true,
+  "label_distribution": {
+    "0": 21500,
+    "1": 3500
+  },
+  "columns_checked": [
+    "Timestamp",
+    "Flow Duration",
+    "Flow Bytes/s",
+    "Packet Length Mean",
+    "Label",
+    "Attack Type"
+  ]
+}

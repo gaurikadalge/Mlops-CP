@@ -1,0 +1,126 @@
+{
+  "dataset": "dataset/cic_ids2017_inspired_synthetic.csv",
+  "dataset_type": "synthetic_benchmark",
+  "strategies": [
+    {
+      "Strategy": "S1_Static",
+      "Window": "W1",
+      "Recent F1": 0.0,
+      "Historical F1": 0.8976,
+      "Forgetting": 0.0,
+      "FPR": 0.021,
+      "Recent Records": 0,
+      "Hist Records": 4000,
+      "Total Records": 4000,
+      "Training Time (s)": 0.0
+    },
+    {
+      "Strategy": "S1_Static",
+      "Window": "W2",
+      "Recent F1": 0.232,
+      "Historical F1": 0.8976,
+      "Forgetting": 0.0,
+      "FPR": 0.1896,
+      "Recent Records": 0,
+      "Hist Records": 4000,
+      "Total Records": 4000,
+      "Training Time (s)": 0.0
+    },
+    {
+      "Strategy": "S2_RecentOnly",
+      "Window": "W2",
+      "Recent F1": 0.7268,
+      "Historical F1": 0.019,
+      "Forgetting": 0.8786,
+      "FPR": 0.0387,
+      "Recent Records": 2000,
+      "Hist Records": 0,
+      "Total Records": 2000,
+      "Training Time (s)": 0.1533
+    },
+    {
+      "Strategy": "S3_RandomReplay",
+      "Window": "W2",
+      "Recent F1": 0.7759,
+      "Historical F1": 0.9095,
+      "Forgetting": -0.012,
+      "FPR": 0.0437,
+      "Recent Records": 1000,
+      "Hist Records": 1000,
+      "Total Records": 2000,
+      "Training Time (s)": 0.1619
+    },
+    {
+      "Strategy": "S4_PatternReplay",
+      "Window": "W2",
+      "Recent F1": 0.7564,
+      "Historical F1": 0.8884,
+      "Forgetting": 0.0092,
+      "FPR": 0.0405,
+      "Recent Records": 1000,
+      "Hist Records": 1000,
+      "Total Records": 2000,
+      "Training Time (s)": 0.1689
+    },
+    {
+      "Strategy": "S1_Static",
+      "Window": "W3",
+      "Recent F1": 0.1687,
+      "Historical F1": 0.8976,
+      "Forgetting": 0.0,
+      "FPR": 0.1685,
+      "Recent Records": 0,
+      "Hist Records": 4000,
+      "Total Records": 4000,
+      "Training Time (s)": 0.0
+    },
+    {
+      "Strategy": "S2_RecentOnly",
+      "Window": "W3",
+      "Recent F1": 0.7657,
+      "Historical F1": 0.5793,
+      "Forgetting": 0.3183,
+      "FPR": 0.0489,
+      "Recent Records": 2000,
+      "Hist Records": 0,
+      "Total Records": 2000,
+      "Training Time (s)": 0.1709
+    },
+    {
+      "Strategy": "S3_RandomReplay",
+      "Window": "W3",
+      "Recent F1": 0.7682,
+      "Historical F1": 0.8916,
+      "Forgetting": 0.006,
+      "FPR": 0.0382,
+      "Recent Records": 1000,
+      "Hist Records": 1000,
+      "Total Records": 2000,
+      "Training Time (s)": 0.1631
+    },
+    {
+      "Strategy": "S4_PatternReplay",
+      "Window": "W3",
+      "Recent F1": 0.7654,
+      "Historical F1": 0.8064,
+      "Forgetting": 0.0912,
+      "FPR": 0.042,
+      "Recent Records": 1000,
+      "Hist Records": 1000,
+      "Total Records": 2000,
+      "Training Time (s)": 0.1681
+    },
+    {
+      "Strategy": "S1_Static",
+      "Window": "W4",
+      "Recent F1": 0.1924,
+      "Historical F1": 0.8976,
+      "Forgetting": 0.0,
+      "FPR": 0.1756,
+      "Recent Records": 0,
+      "Hist Records": 4000,
+      "Total Records": 4000,
+      "Training Time (s)": 0.0
+    }
+  ]
+}

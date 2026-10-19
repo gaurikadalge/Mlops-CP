@@ -1,0 +1,5 @@
+outs:
+- md5: 066851ed77ad375fdedca04c868d9460
+  size: 2110649
+  hash: md5
+  path: cic_ids2017_inspired_synthetic.csv
