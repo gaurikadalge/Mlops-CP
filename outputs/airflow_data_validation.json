@@ -1,5 +1,5 @@
 {
-  "dataset_path": "cic_ids2017_inspired_synthetic.csv",
+  "dataset_path": "C:\\Users\\Utkarsh Ghom\\Documents\\VIT\\ASSIGNMENTS\\Mlops\\CP\\Mlops-CP\\dataset\\cic_ids2017_inspired_synthetic.csv",
   "dataset_type": "synthetic_benchmark",
   "total_records": 105000,
   "total_columns": 14,

@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-cloud: #f5f8ff;
+    --card-white: #ffffff;
+    --mist-blue: #e7f0ff;
+    --aegis-blue: #5288f5;
+    --soft-lavender: #9b8afb;
+    --calm-teal: #54cdb6;
+    --muted-coral: #ff8294;
+    --soft-yellow: #ffe98a;
+    --deep-navy: #172554;
+    --secondary-slate: #64748b;
+    --muted-slate: #94a3b8;
+    --border-soft: #e4eaf5;
+  }
+
+  body {
+    background: #f0f4fd;
+    background-image: 
+      radial-gradient(at 10% 10%, rgba(231, 240, 255, 0.9) 0px, transparent 50%),
+      radial-gradient(at 90% 10%, rgba(243, 238, 255, 0.8) 0px, transparent 50%),
+      radial-gradient(at 50% 90%, rgba(255, 238, 243, 0.6) 0px, transparent 50%);
+    background-attachment: fixed;
+    color: #172554;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* Custom scrollbars for clean light UI */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Card hover transitions */
+.aegis-card {
+  background-color: #ffffff;
+  border: 1px solid #e4eaf5;
+  border-radius: 18px;
+  box-shadow: 0 4px 20px -2px rgba(82, 136, 245, 0.05);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.aegis-card:hover {
+  box-shadow: 0 8px 30px -4px rgba(82, 136, 245, 0.08);
+}

@@ -1,17 +1,25 @@
 {
   "dataset_path": "dataset/cic_ids2017_inspired_synthetic.csv",
-  "total_records": 25000,
-  "baseline_size": 7500,
-  "streaming_size": 17500,
+  "total_records": 105000,
+  "baseline_size": 31500,
+  "streaming_size": 73500,
   "memory_summary": {
-    "num_attack_types_stored": 2,
+    "num_attack_types_stored": 6,
     "attack_types": [
-      "DoS Hulk",
-      "PortScan"
+      "Bot",
+      "BruteForce",
+      "DoS_Hulk",
+      "DoS_Slowloris",
+      "PortScan",
+      "WebAttack"
     ],
     "sample_counts_per_attack": {
-      "DoS Hulk": 500,
-      "PortScan": 500
+      "Bot": 1725,
+      "BruteForce": 964,
+      "DoS_Hulk": 4000,
+      "DoS_Slowloris": 2880,
+      "PortScan": 1810,
+      "WebAttack": 573
     }
   }
 }

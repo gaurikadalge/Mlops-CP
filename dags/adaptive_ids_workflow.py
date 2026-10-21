@@ -82,16 +82,26 @@ except ImportError:
 
 # ==============================================================================
 # Task Callables (Orchestrating Existing Research Modules)
+
+def _resolve_data_path() -> str:
+    candidates = [
+        os.path.join(PROJECT_ROOT, "dataset", "cic_ids2017_inspired_synthetic.csv"),
+        os.path.join(PROJECT_ROOT, "cic_ids2017_inspired_synthetic.csv"),
+        os.path.join("dataset", "cic_ids2017_inspired_synthetic.csv"),
+        "cic_ids2017_inspired_synthetic.csv",
+    ]
+    for p in candidates:
+        if os.path.isfile(p):
+            return p
+    return os.path.join(PROJECT_ROOT, "dataset", "cic_ids2017_inspired_synthetic.csv")
+
 # ==============================================================================
 
 def select_chronological_window(window_index: int = 1, **kwargs) -> Dict[str, Any]:
     """Task 1: Selects the next chronological traffic streaming window."""
     from src.preprocessing.loader import load_dataset, create_temporal_windows, split_temporal_window
     
-    # Path resolution
-    data_path = "dataset/cic_ids2017_inspired_synthetic.csv"
-    if not os.path.exists(data_path):
-        data_path = "cic_ids2017_inspired_synthetic.csv"
+    data_path = _resolve_data_path()
     
     df = load_dataset(data_path)
     hist_size = int(len(df) * 0.2)
@@ -119,12 +129,10 @@ def select_chronological_window(window_index: int = 1, **kwargs) -> Dict[str, An
 def validate_schema(**kwargs) -> Dict[str, Any]:
     """Task 2: Validates data and feature schema."""
     from src.pipeline.validate_data import validate_dataset, CORE_SYNTHETIC_FEATURES
-    data_path = "dataset/cic_ids2017_inspired_synthetic.csv"
-    if not os.path.exists(data_path):
-        data_path = "cic_ids2017_inspired_synthetic.csv"
+    data_path = _resolve_data_path()
     
-    os.makedirs("outputs", exist_ok=True)
-    report_path = "outputs/airflow_data_validation.json"
+    os.makedirs(os.path.join(PROJECT_ROOT, "outputs"), exist_ok=True)
+    report_path = os.path.join(PROJECT_ROOT, "outputs", "airflow_data_validation.json")
     is_valid = validate_dataset(data_path, report_path)
     return {"schema_valid": is_valid, "checked_features": CORE_SYNTHETIC_FEATURES}
 
@@ -134,9 +142,7 @@ def detect_drift(**kwargs) -> Dict[str, Any]:
     from src.preprocessing.loader import load_dataset
     from src.drift.ks_detector import detect_drift as run_ks_drift
     
-    data_path = "dataset/cic_ids2017_inspired_synthetic.csv"
-    if not os.path.exists(data_path):
-        data_path = "cic_ids2017_inspired_synthetic.csv"
+    data_path = _resolve_data_path()
     
     df = load_dataset(data_path)
     feature_cols = [c for c in df.columns if c not in ["Timestamp", "Label", "Attack Type"]]
@@ -174,9 +180,7 @@ def retrieve_historical_patterns(**kwargs) -> Dict[str, Any]:
     from src.memory.build_memory import build_historical_memory
     from src.memory.retrieve import retrieve_patterns
     
-    data_path = "dataset/cic_ids2017_inspired_synthetic.csv"
-    if not os.path.exists(data_path):
-        data_path = "cic_ids2017_inspired_synthetic.csv"
+    data_path = _resolve_data_path()
     
     df = load_dataset(data_path)
     feature_cols = [c for c in df.columns if c not in ["Timestamp", "Label", "Attack Type"]]
@@ -200,9 +204,7 @@ def adapt_and_train(**kwargs) -> Dict[str, Any]:
     from src.adaptation.pattern_replay import adapt_pattern_replay
     from src.models.train import train_xgboost
     
-    data_path = "dataset/cic_ids2017_inspired_synthetic.csv"
-    if not os.path.exists(data_path):
-        data_path = "cic_ids2017_inspired_synthetic.csv"
+    data_path = _resolve_data_path()
         
     df = load_dataset(data_path)
     feature_cols = [c for c in df.columns if c not in ["Timestamp", "Label", "Attack Type"]]
@@ -248,9 +250,7 @@ def evaluate_forward_and_holdout(**kwargs) -> Dict[str, Any]:
     from src.evaluation.metrics import evaluate_performance
     from src.evaluation.forgetting import evaluate_historical_retention
     
-    data_path = "dataset/cic_ids2017_inspired_synthetic.csv"
-    if not os.path.exists(data_path):
-        data_path = "cic_ids2017_inspired_synthetic.csv"
+    data_path = _resolve_data_path()
         
     df = load_dataset(data_path)
     feature_cols = [c for c in df.columns if c not in ["Timestamp", "Label", "Attack Type"]]
@@ -347,9 +347,7 @@ def update_memory_under_policy(**kwargs) -> Dict[str, Any]:
     from src.preprocessing.loader import load_dataset
     from src.memory.profile import profile_pattern
     
-    data_path = "dataset/cic_ids2017_inspired_synthetic.csv"
-    if not os.path.exists(data_path):
-        data_path = "cic_ids2017_inspired_synthetic.csv"
+    data_path = _resolve_data_path()
         
     df = load_dataset(data_path)
     feature_cols = [c for c in df.columns if c not in ["Timestamp", "Label", "Attack Type"]]
