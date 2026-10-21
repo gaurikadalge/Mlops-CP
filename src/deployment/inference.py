@@ -17,8 +17,16 @@ from typing import Dict, Any, Union, List, Tuple
 # Default expected feature schema
 DEFAULT_FEATURE_NAMES = [
     "Flow Duration",
+    "Total Fwd Packets",
+    "Total Backward Packets",
+    "Total Length of Fwd Packets",
+    "Total Length of Bwd Packets",
     "Flow Bytes/s",
-    "Packet Length Mean"
+    "Flow Packets/s",
+    "Packet Length Mean",
+    "Packet Length Std",
+    "SYN Flag Count",
+    "ACK Flag Count"
 ]
 
 
@@ -102,6 +110,20 @@ def predict_fn(input_data: pd.DataFrame, model: Union[xgb.Booster, xgb.XGBClassi
     Executes model inference on validated input DataFrame.
     Returns prediction classifications, probabilities, and labels.
     """
+    # Align features with model expectations if known
+    expected_cols = getattr(model, "feature_names", None)
+    if expected_cols is None and hasattr(model, "feature_names_in_") and model.feature_names_in_ is not None:
+        expected_cols = list(model.feature_names_in_)
+
+    if expected_cols:
+        aligned_df = pd.DataFrame(index=input_data.index)
+        for col in expected_cols:
+            if col in input_data.columns:
+                aligned_df[col] = input_data[col]
+            else:
+                aligned_df[col] = 0.0
+        input_data = aligned_df
+
     if isinstance(model, xgb.Booster):
         dmatrix = xgb.DMatrix(input_data)
         raw_probs = model.predict(dmatrix)

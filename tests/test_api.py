@@ -21,12 +21,21 @@ def client():
     serve_module.model = test_model
     serve_module.model_metadata["strategy"] = "S4_PatternReplay"
     serve_module.model_metadata["run_id"] = "test-run-123"
+    serve_module.model_metadata["feature_names"] = feature_names
     try:
         serve_module.explainer = shap.TreeExplainer(test_model)
     except Exception:
         serve_module.explainer = None
 
     with TestClient(app) as test_client:
+        serve_module.model = test_model
+        serve_module.model_metadata["strategy"] = "S4_PatternReplay"
+        serve_module.model_metadata["run_id"] = "test-run-123"
+        serve_module.model_metadata["feature_names"] = feature_names
+        try:
+            serve_module.explainer = shap.TreeExplainer(test_model)
+        except Exception:
+            serve_module.explainer = None
         yield test_client
 
 

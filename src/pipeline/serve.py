@@ -245,6 +245,13 @@ def startup_event():
     initialize the SHAP explainer, and sync Prometheus gauges.
     """
     global model, explainer, model_metadata
+    if model is not None and model_metadata.get("strategy") != "Unloaded":
+        try:
+            sync_mlflow_metrics_to_prometheus()
+        except Exception:
+            pass
+        return
+
     tracking_uri = os.getenv("MLFLOW_TRACKING_URI", "sqlite:///mlflow.db")
     mlflow.set_tracking_uri(tracking_uri)
     
@@ -305,7 +312,11 @@ def startup_event():
             model = loaded_model
             model_metadata["strategy"] = str(strategy_name)
             model_metadata["run_id"] = str(run_id)
-            feat_names = list(getattr(loaded_model, "feature_names_in_", []))
+            feat_names = []
+            if hasattr(loaded_model, "feature_names_in_") and loaded_model.feature_names_in_ is not None:
+                feat_names = list(loaded_model.feature_names_in_)
+            elif hasattr(loaded_model, "feature_names") and loaded_model.feature_names is not None:
+                feat_names = list(loaded_model.feature_names)
             model_metadata["feature_names"] = feat_names
             MODEL_INFO.labels(strategy=str(strategy_name), run_id=str(run_id)).set(1)
 
