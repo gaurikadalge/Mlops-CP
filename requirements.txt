@@ -11,3 +11,4 @@ plotly
 streamlit
 prometheus-client
 shap
+httpx

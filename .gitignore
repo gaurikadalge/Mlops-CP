@@ -14,3 +14,9 @@ mlflow.db
 venv/
 .venv/
 env/
+
+# Pytest and coverage artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+

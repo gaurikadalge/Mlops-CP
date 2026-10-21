@@ -24,7 +24,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pytest-cov dvc
+        pip install pytest pytest-cov dvc httpx
         pip install -r requirements.txt
         
     - name: Run Full Unit & Integration Test Suite
