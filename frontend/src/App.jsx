@@ -151,7 +151,7 @@ const STRATEGY_COMPARISON = [
     fpr: '17.6%', 
     time: '0.00s', 
     budget: '0 pkts', 
-    verdict: 'Fails to detect mutated attacks',
+    verdict: 'Degraded (Zero Plasticity)',
     color: '#94A3B8'
   },
   { 
@@ -164,7 +164,7 @@ const STRATEGY_COMPARISON = [
     fpr: '4.9%', 
     time: '0.16s', 
     budget: '4,000 pkts', 
-    verdict: 'Severe Catastrophic Forgetting!',
+    verdict: 'Severe Forgetting (Unstable)',
     color: '#FF8294'
   },
   { 
@@ -177,7 +177,7 @@ const STRATEGY_COMPARISON = [
     fpr: '3.8%', 
     time: '0.16s', 
     budget: '4,000 pkts', 
-    verdict: 'Sub-optimal attack coverage',
+    verdict: 'Sub-Optimal Recall',
     color: '#FFE98A'
   },
   { 
@@ -190,7 +190,7 @@ const STRATEGY_COMPARISON = [
     fpr: '0.8% to 4.2%', 
     time: '0.16s', 
     budget: '4,000 pkts', 
-    verdict: 'Optimal Pareto Balance',
+    verdict: 'Production Active (Optimal)',
     color: '#54CDB6'
   }
 ];
@@ -326,7 +326,7 @@ export default function App() {
                 { id: 'drift', label: 'KS Drift Detection', icon: BarChart3 },
                 { id: 'replay', label: 'Replay & Budget (4K)', icon: RefreshCw },
                 { id: 'benchmarks', label: 'Continual Benchmarks', icon: TrendingUp },
-                { id: 'curriculum', label: 'Units I-VI & Viva', icon: FlaskConical },
+                { id: 'curriculum', label: 'MLOps Architecture (I-VI)', icon: Layers },
               ].map(item => {
                 const Icon = item.icon;
                 const active = activeTab === item.id;
@@ -396,7 +396,7 @@ export default function App() {
                 className="flex items-center space-x-1.5 px-3.5 py-1.5 bg-gradient-to-r from-[#9B8AFB] to-[#5288F5] text-white rounded-xl text-xs font-semibold shadow-[0_2px_8px_rgba(155,138,251,0.3)] hover:opacity-95 transition-opacity cursor-pointer"
               >
                 <Sparkles className="h-3.5 w-3.5" />
-                <span>Viva Defense Assistant</span>
+                <span>Ask AI</span>
               </button>
 
               {/* Notification Bell */}
@@ -692,7 +692,7 @@ export default function App() {
                         <th className="font-medium pb-2">Catastrophic Forgetting</th>
                         <th className="font-medium pb-2">Retraining Time</th>
                         <th className="font-medium pb-2">Sample Budget</th>
-                        <th className="font-medium pb-2 text-right">Review Verdict</th>
+                        <th className="font-medium pb-2 text-right">Operational Status</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#F5F8FF]">
@@ -1177,15 +1177,15 @@ export default function App() {
           )}
 
           {/* ========================================================================= */}
-          {/* TAB 7: CURRICULUM ALIGNMENT & FACULTY VIVA DEFENSE                         */}
+          {/* TAB 7: MLOPS ARCHITECTURE & SPECIFICATIONS (UNITS I-VI)                   */}
           {/* ========================================================================= */}
           {activeTab === 'curriculum' && (
             <div className="p-6 space-y-6">
               
               <div className="bg-white border border-[#E4EAF5] rounded-[18px] p-5 shadow-xs">
-                <h3 className="text-base font-bold text-[#172554]">Faculty Viva Defense Guide & Curriculum Alignment (Units I–VI)</h3>
+                <h3 className="text-base font-bold text-[#172554]">MLOps System Architecture & Technical Specifications (Units I–VI)</h3>
                 <p className="text-xs text-[#64748B] mt-1">
-                  Concrete mappings to every syllabus unit, verified repository files, and core academic defense answers.
+                  Concrete repository implementation mapping across curriculum units, automated pipelines, and cloud contracts.
                 </p>
               </div>
 
@@ -1207,29 +1207,48 @@ export default function App() {
                 ))}
               </div>
 
-              {/* Top Viva Defense Questions & Direct Model Answers */}
+              {/* Core Mathematical & Algorithmic Formulations */}
               <div className="bg-white border border-[#E4EAF5] rounded-[18px] p-5 shadow-xs space-y-4">
-                <h4 className="text-sm font-bold text-[#172554]">Top 3 Faculty Viva Questions & Authoritative Answers</h4>
+                <h4 className="text-sm font-bold text-[#172554]">Governing Mathematical & Algorithmic Formulations</h4>
 
-                <div className="space-y-3 text-xs">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                   <div className="p-3.5 rounded-xl bg-[#F5F8FF] border border-[#E4EAF5] space-y-1">
-                    <div className="font-bold text-[#172554]">Q1: How do you prove retraining happened without data leakage?</div>
-                    <p className="text-[#64748B]">
-                      We enforce strict chronological splitting. Incoming streaming windows (W_t) are evaluated <i>before</i> any retraining happens. Furthermore, the catastrophic forgetting metric is calculated on an isolated holdout baseline test set that is <b>never</b> exposed to any retraining batch.
+                    <div className="font-bold text-[#5288F5]">1. Two-Sample Kolmogorov-Smirnov (KS) Drift Test</div>
+                    <code className="text-[11px] font-mono block text-[#172554] p-1.5 bg-white rounded border border-[#E4EAF5]">
+                      D = sup_x | F_ref(x) - F_curr(x) |
+                    </code>
+                    <p className="text-[#64748B] text-[11px]">
+                      Non-parametric covariate shift detection on continuous flow attributes. Declared when asymptotic p &lt; 0.05.
                     </p>
                   </div>
 
                   <div className="p-3.5 rounded-xl bg-[#F5F8FF] border border-[#E4EAF5] space-y-1">
-                    <div className="font-bold text-[#172554]">Q2: Why use Wasserstein distance instead of Euclidean distance for memory retrieval?</div>
-                    <p className="text-[#64748B]">
-                      Network telemetry features have wildly different magnitudes (e.g., Flow Duration up to 10⁸ vs SYN Flag 0/1). Euclidean distance on mean vectors is dwarfed by large features and ignores distribution variance. Scale-normalized 1D Wasserstein distance computes the Earth Mover's Distance normalized by historical feature standard deviations (σ_v + ε), treating all 11 features equitably.
+                    <div className="font-bold text-[#9B8AFB]">2. Scale-Normalized 1D Wasserstein Distance</div>
+                    <code className="text-[11px] font-mono block text-[#172554] p-1.5 bg-white rounded border border-[#E4EAF5]">
+                      W_norm(u, v) = W_1(u, v) / (σ_v + ε)
+                    </code>
+                    <p className="text-[#64748B] text-[11px]">
+                      Normalizes variance across disparate feature scales (Flow Duration vs SYN Flag) to rank historical pattern centroids.
                     </p>
                   </div>
 
                   <div className="p-3.5 rounded-xl bg-[#F5F8FF] border border-[#E4EAF5] space-y-1">
-                    <div className="font-bold text-[#172554]">Q3: Why not simply retrain on all historical data?</div>
-                    <p className="text-[#64748B]">
-                      Retraining on full historical data has O(N) computational complexity. As millions of packets accumulate, retraining latency grows from seconds to hours, and memory buffers overflow. Enforcing B_total = 4,000 samples guarantees O(1) constant compute (~0.16s), saving 98.4% compute power while matching or exceeding full-history retention.
+                    <div className="font-bold text-[#54CDB6]">3. Strict Budget Invariant Equation</div>
+                    <code className="text-[11px] font-mono block text-[#172554] p-1.5 bg-white rounded border border-[#E4EAF5]">
+                      B_total = B_recent + B_hist = 4,000 pkts ⟹ O(1) Time (~0.16s)
+                    </code>
+                    <p className="text-[#64748B] text-[11px]">
+                      Constant-time compute guarantee eliminating latency escalation and memory buffer saturation.
+                    </p>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-[#F5F8FF] border border-[#E4EAF5] space-y-1">
+                    <div className="font-bold text-[#FF8294]">4. Catastrophic Forgetting Metric</div>
+                    <code className="text-[11px] font-mono block text-[#172554] p-1.5 bg-white rounded border border-[#E4EAF5]">
+                      Forgetting = F1_baseline(D_hist_test) - F1_adapted(D_hist_test)
+                    </code>
+                    <p className="text-[#64748B] text-[11px]">
+                      Evaluated on an isolated holdout baseline test set that is strictly locked and never exposed during retraining.
                     </p>
                   </div>
                 </div>
@@ -1314,7 +1333,7 @@ export default function App() {
       </div>
 
       {/* ========================================================================= */}
-      {/* VIVA DEFENSE ASSISTANT MODAL (ASK AI)                                      */}
+      {/* SECOPS AI ASSISTANT MODAL (ASK AI)                                        */}
       {/* ========================================================================= */}
       {isAiModalOpen && (
         <div className="fixed inset-0 bg-[#172554]/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
@@ -1326,8 +1345,8 @@ export default function App() {
                   <Sparkles className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-[#172554]">AEGIS Faculty Defense Assistant</h4>
-                  <p className="text-[11px] text-[#64748B]">Immediate answers for faculty review and viva defense</p>
+                  <h4 className="text-sm font-bold text-[#172554]">AEGIS SecOps AI Assistant</h4>
+                  <p className="text-[11px] text-[#64748B]">Automated reasoning and continual learning telemetry</p>
                 </div>
               </div>
 
@@ -1343,20 +1362,20 @@ export default function App() {
               <div className="p-3 rounded-xl bg-[#F5F8FF] border border-[#BFD5FE] text-[#172554] space-y-1">
                 <div className="font-bold flex items-center gap-1.5 text-[#5288F5]">
                   <Info className="h-3.5 w-3.5" />
-                  <span>How do we prove retraining happened?</span>
+                  <span>How does AEGIS detect concept drift in network traffic?</span>
                 </div>
                 <p className="text-[#64748B]">
-                  Every retraining cycle generates a distinct MLflow Run ID (e.g. <code>m-e3ffaa...</code>), updates Prometheus counter <code>ids_retraining_events_total</code>, records latency in <code>ids_retraining_duration_seconds</code> (0.16s), and logs the quality gate pass in Grafana.
+                  AEGIS evaluates two-sample Kolmogorov-Smirnov (KS) tests on continuous flow attributes. When distribution divergence exceeds critical significance (p &lt; 0.05), a covariate shift alert is triggered without needing ground-truth attack labels.
                 </p>
               </div>
 
               <div className="p-3 rounded-xl bg-[#F5F8FF] border border-[#E4EAF5] text-[#172554] space-y-1">
                 <div className="font-bold flex items-center gap-1.5 text-[#9B8AFB]">
                   <TrendingUp className="h-3.5 w-3.5" />
-                  <span>Why is S4 better than S2?</span>
+                  <span>How does AEGIS prevent catastrophic forgetting?</span>
                 </div>
                 <p className="text-[#64748B]">
-                  S2 achieves 76.6% recent F1 but suffers <b>31.8% catastrophic forgetting</b> on past attacks. S4 achieves 76.5%–94.8% recent F1 while keeping catastrophic forgetting below <b>9.1%</b> (down to 1.6%) on identical 4,000-sample budgets.
+                  Recent-Only retraining (S2) discards historical decision boundaries, causing past attack F1 to collapse to 57.9% (31.8% decay). AEGIS (S4) interleaves 2,000 historical exemplars of identified attack patterns into the retraining batch, preserving 94.2% historical retention while strictly maintaining the 4,000-packet compute budget.
                 </p>
               </div>
             </div>
