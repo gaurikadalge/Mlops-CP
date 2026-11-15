@@ -3,6 +3,7 @@ import glob
 import time
 from typing import Dict, Any, List, Optional
 from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, validator
 import pandas as pd
 import numpy as np
@@ -113,6 +114,14 @@ STRATEGY_FPR = Gauge(
 app = FastAPI(
     title="Adaptive IDS Inference & Observability API",
     description="Production inference endpoint with Prometheus monitoring and SHAP local explainability."
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Model state
