@@ -1,5 +1,5 @@
 """
-AEGIS Traffic Stream Simulator
+Driftwood Traffic Stream Simulator
 Sends real-time network flow samples to the FastAPI REST API (port 8000).
 This immediately triggers:
 1. Live model inference and TreeSHAP explainability.
@@ -72,7 +72,7 @@ def send_sample(sample, explain=False):
         return False, str(e), elapsed_ms
 
 def main():
-    parser = argparse.ArgumentParser(description="Send network traffic samples to AEGIS API.")
+    parser = argparse.ArgumentParser(description="Send network traffic samples to Driftwood API.")
     parser.add_argument("--count", type=int, default=20, help="Number of packets to send (default: 20)")
     parser.add_argument("--delay", type=float, default=0.2, help="Delay in seconds between packets (default: 0.2s)")
     parser.add_argument("--explain", action="store_true", help="Also request SHAP explanations via /explain")
@@ -80,7 +80,7 @@ def main():
     args = parser.parse_args()
 
     print("=" * 65)
-    print("  AEGIS Live Traffic Stream Generator")
+    print("  Driftwood Live Traffic Stream Generator")
     print(f"  Target: {API_URL} | Packets: {args.count} | Delay: {args.delay}s")
     print(f"  Attack Ratio: {int(args.attack_ratio * 100)}% | SHAP Explain: {args.explain}")
     print("=" * 65)

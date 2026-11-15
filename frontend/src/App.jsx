@@ -119,7 +119,7 @@ const BUCKETS = [
     pVal: 0.0022,
     driftDetected: false,
     retrainingTriggered: false,
-    activeModel: 'AEGIS XGBoost v2.0 (Promoted)',
+    activeModel: 'Driftwood XGBoost v2.0 (Promoted)',
     recentF1: 94.8,
     histF1: 94.2,
     forgetting: 1.6,
@@ -182,7 +182,7 @@ const STRATEGY_COMPARISON = [
   },
   { 
     id: 'S4', 
-    name: 'S4: Pattern Replay (AEGIS)', 
+    name: 'S4: Pattern Replay (Driftwood)', 
     mechanism: '2,000 recent + 2,000 Wasserstein-matched historical exemplars', 
     recentF1: '76.5% → 94.8%', 
     histF1: '80.6% → 94.2%', 
@@ -312,7 +312,7 @@ export default function App() {
                 <Shield className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold tracking-tight text-[#172554]">AEGIS</h1>
+                <h1 className="text-xl font-bold tracking-tight text-[#172554]">Driftwood</h1>
                 <p className="text-[11px] font-medium text-[#64748B]">Drift-Aware IDS</p>
               </div>
             </div>
@@ -373,7 +373,7 @@ export default function App() {
           <header className="bg-white/80 backdrop-blur-sm border-b border-[#E4EAF5] px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sticky top-0 z-30">
             <div>
               <h2 className="text-xl font-bold tracking-tight text-[#172554]">
-                AEGIS <span className="text-[#5288F5]">Intrusion Detection System</span>
+                Driftwood <span className="text-[#5288F5]">Intrusion Detection System</span>
               </h2>
               <p className="text-xs text-[#64748B]">
                 Continual Learning under Bounded O(1) Replay Budgets (B_total = 4,000 samples) · 11 Features Monitored
@@ -1116,7 +1116,7 @@ export default function App() {
                     <p className="text-xs text-[#64748B]">Evaluates F1 score on baseline attacks across chronological windows</p>
                   </div>
                   <div className="flex items-center gap-3 text-xs">
-                    <span className="text-[#54CDB6] font-bold">● S4: AEGIS (94.2% retained)</span>
+                    <span className="text-[#54CDB6] font-bold">● S4: Driftwood (94.2% retained)</span>
                     <span className="text-[#FF8294] font-bold">● S2: Recent-Only (Collapses to 57.9%)</span>
                   </div>
                 </div>
@@ -1140,7 +1140,7 @@ export default function App() {
                       <Line type="monotone" dataKey="S1" name="S1: Static" stroke="#94A3B8" strokeDasharray="4 4" strokeWidth={2} />
                       <Line type="monotone" dataKey="S2" name="S2: Recent-Only (Crash)" stroke="#FF8294" strokeWidth={2.5} />
                       <Line type="monotone" dataKey="S3" name="S3: Random Replay" stroke="#FFE98A" strokeWidth={2} />
-                      <Line type="monotone" dataKey="S4" name="S4: Pattern Replay (AEGIS)" stroke="#54CDB6" strokeWidth={3} dot={{ r: 5, fill: '#54CDB6' }} />
+                      <Line type="monotone" dataKey="S4" name="S4: Pattern Replay (Driftwood)" stroke="#54CDB6" strokeWidth={3} dot={{ r: 5, fill: '#54CDB6' }} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
@@ -1160,7 +1160,7 @@ export default function App() {
                   <div className="text-[#64748B] font-semibold">Compute Power Saved vs Full-History</div>
                   <div className="text-2xl font-bold text-[#5288F5]">98.4% Reduction</div>
                   <p className="text-[#64748B]">
-                    Retraining on 500,000+ historical packets takes ~12.5s; AEGIS retrains in 0.16s with identical accuracy.
+                    Retraining on 500,000+ historical packets takes ~12.5s; Driftwood retrains in 0.16s with identical accuracy.
                   </p>
                 </div>
 
@@ -1345,7 +1345,7 @@ export default function App() {
                   <Sparkles className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-[#172554]">AEGIS SecOps AI Assistant</h4>
+                  <h4 className="text-sm font-bold text-[#172554]">Driftwood SecOps AI Assistant</h4>
                   <p className="text-[11px] text-[#64748B]">Automated reasoning and continual learning telemetry</p>
                 </div>
               </div>
@@ -1362,20 +1362,20 @@ export default function App() {
               <div className="p-3 rounded-xl bg-[#F5F8FF] border border-[#BFD5FE] text-[#172554] space-y-1">
                 <div className="font-bold flex items-center gap-1.5 text-[#5288F5]">
                   <Info className="h-3.5 w-3.5" />
-                  <span>How does AEGIS detect concept drift in network traffic?</span>
+                  <span>How does Driftwood detect concept drift in network traffic?</span>
                 </div>
                 <p className="text-[#64748B]">
-                  AEGIS evaluates two-sample Kolmogorov-Smirnov (KS) tests on continuous flow attributes. When distribution divergence exceeds critical significance (p &lt; 0.05), a covariate shift alert is triggered without needing ground-truth attack labels.
+                  Driftwood evaluates two-sample Kolmogorov-Smirnov (KS) tests on continuous flow attributes. When distribution divergence exceeds critical significance (p &lt; 0.05), a covariate shift alert is triggered without needing ground-truth attack labels.
                 </p>
               </div>
 
               <div className="p-3 rounded-xl bg-[#F5F8FF] border border-[#E4EAF5] text-[#172554] space-y-1">
                 <div className="font-bold flex items-center gap-1.5 text-[#9B8AFB]">
                   <TrendingUp className="h-3.5 w-3.5" />
-                  <span>How does AEGIS prevent catastrophic forgetting?</span>
+                  <span>How does Driftwood prevent catastrophic forgetting?</span>
                 </div>
                 <p className="text-[#64748B]">
-                  Recent-Only retraining (S2) discards historical decision boundaries, causing past attack F1 to collapse to 57.9% (31.8% decay). AEGIS (S4) interleaves 2,000 historical exemplars of identified attack patterns into the retraining batch, preserving 94.2% historical retention while strictly maintaining the 4,000-packet compute budget.
+                  Recent-Only retraining (S2) discards historical decision boundaries, causing past attack F1 to collapse to 57.9% (31.8% decay). Driftwood (S4) interleaves 2,000 historical exemplars of identified attack patterns into the retraining batch, preserving 94.2% historical retention while strictly maintaining the 4,000-packet compute budget.
                 </p>
               </div>
             </div>

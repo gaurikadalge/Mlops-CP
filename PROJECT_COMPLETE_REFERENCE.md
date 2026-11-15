@@ -1,4 +1,4 @@
-# AEGIS: Adaptive Historical Memory for Drift-Aware Intrusion Detection
+# Driftwood: Adaptive Historical Memory for Drift-Aware Intrusion Detection
 ## Complete Project Reference, Architectural Data Flow & Review Master Manual
 
 ---
@@ -40,8 +40,8 @@ When drift degrades detection accuracy, conventional MLOps engineering defaults 
 └───────────────────────────────────────┴───────────────────────────────────────────────────┘
 ```
 
-### The AEGIS Innovation: Pattern-Aware Relevance Replay (S4)
-AEGIS solves the **Stability-Plasticity Dilemma** through three core innovations:
+### The Driftwood Innovation: Pattern-Aware Relevance Replay (S4)
+Driftwood solves the **Stability-Plasticity Dilemma** through three core innovations:
 1. **Multi-Feature Non-Parametric Drift Detection**: Uses two-sample Kolmogorov-Smirnov (KS) tests on continuous network features without needing ground-truth labels.
 2. **Scale-Normalized Wasserstein Historical Memory Bank**: Caches compact attack and benign exemplars ($5,000$ samples per class, bounded to $12.4\text{ MB}$), using Earth Mover's Distance normalized by feature variance to retrieve only the most mathematically relevant threat patterns.
 3. **Strict Bounded Retraining Invariant ($B_{total} = 4,000$ samples)**: Allocates $50\%$ recent streaming samples ($2,000$) $+ 50\%$ retrieved historical exemplars ($2,000$). This guarantees **constant $O(1)$ retraining time of $\sim 0.16\text{s}$**, achieving a **$98.4\%$ compute saving** while keeping catastrophic forgetting below $9.1\%$ (down to $1.6\%$).
@@ -109,7 +109,7 @@ AEGIS solves the **Stability-Plasticity Dilemma** through three core innovations
 
 ## 3. The 11 Monitored Model Features (Production Contract)
 
-Every model artifact, test suite, and API endpoint in AEGIS adheres to this strict 11-feature numerical schema:
+Every model artifact, test suite, and API endpoint in Driftwood adheres to this strict 11-feature numerical schema:
 
 | # | Feature Name | Measurement Unit | Normal Benign Profile | Attack Perturbation Signature |
 | :-: | :--- | :---: | :--- | :--- |
@@ -194,7 +194,7 @@ $$\text{Forgetting} = F1_{baseline}(\mathcal{D}_{hist}^{test}) - F1_{adapted}(\m
 
 Reviewers and faculty frequently ask: *"How do we verify in code and logs that the system actually retrained rather than hardcoding results?"*
 
-AEGIS provides **6 distinct, verifiable audit mechanisms**:
+Driftwood provides **6 distinct, verifiable audit mechanisms**:
 
 ```
                                VERIFICATION AUDIT TRAIL
@@ -232,19 +232,19 @@ The following empirical results were recorded from the formal experimental run a
 | **$S1$: Static IDS** | Trained on $W_1$ baseline; never retrained | **$19.2\%$** | **$89.8\%$** | **$0.0\%$** | **$0.00\text{s}$** | $0$ pkts | Fails to detect mutated streaming attacks. |
 | **$S2$: Recent-Only** | Retrains exclusively on $4,000$ recent samples | **$76.6\%$** | **$57.9\%$** | **$+31.8\%$** | **$0.16\text{s}$** | $4,000$ pkts | Severe Catastrophic Forgetting! Past attacks bypass IDS. |
 | **$S3$: Random Replay** | $2,000$ recent $+ 2,000$ random historical exemplars | **$76.8\%$** | **$89.2\%$** | **$+0.6\%$** | **$0.16\text{s}$** | $4,000$ pkts | Historical retention preserved, but misses low-volume attacks. |
-| **$S4$: AEGIS Pattern Replay** | $2,000$ recent $+ 2,000$ Wasserstein-matched exemplars | **$76.5\% \rightarrow 94.8\%$** | **$80.6\% \rightarrow 94.2\%$** | **$+1.6\% \text{ to } +9.1\%$** | **$0.16\text{s}$** | $4,000$ pkts | **Optimal Pareto Balance**: High plasticity and high stability. |
+| **$S4$: Driftwood Pattern Replay** | $2,000$ recent $+ 2,000$ Wasserstein-matched exemplars | **$76.5\% \rightarrow 94.8\%$** | **$80.6\% \rightarrow 94.2\%$** | **$+1.6\% \text{ to } +9.1\%$** | **$0.16\text{s}$** | $4,000$ pkts | **Optimal Pareto Balance**: High plasticity and high stability. |
 
 ---
 
 ## 7. Computational Power & Time Saved (Quantitative Proof)
 
-Faculty reviewers frequently evaluate computational complexity and cost efficiency. The table below proves the mathematical saving of AEGIS's bounded budget approach:
+Faculty reviewers frequently evaluate computational complexity and cost efficiency. The table below proves the mathematical saving of Driftwood's bounded budget approach:
 
-### Mathematical Comparison: Full-History Retraining vs. AEGIS
+### Mathematical Comparison: Full-History Retraining vs. Driftwood
 
 Let $N$ be the cumulative total of streaming traffic packets over time:
 * **Full-History Retraining Complexity**: $\mathcal{O}(N)$ where $N$ grows indefinitely ($10\text{k} \rightarrow 50\text{k} \rightarrow 500\text{k}+$ packets).
-* **AEGIS Bounded Budget Complexity**: $\mathcal{O}(B_{total})$ where $B_{total} \equiv 4,000$ (strictly constant $\mathcal{O}(1)$).
+* **Driftwood Bounded Budget Complexity**: $\mathcal{O}(B_{total})$ where $B_{total} \equiv 4,000$ (strictly constant $\mathcal{O}(1)$).
 
 ```
 Retraining Latency (seconds)
@@ -255,14 +255,14 @@ Retraining Latency (seconds)
   6s │                         ●
   4s │                   ●
   2s │             ●
-0.16s│ ──────────────────────────────────────────────── AEGIS Replay (O(1) Constant Budget)
+0.16s│ ──────────────────────────────────────────────── Driftwood Replay (O(1) Constant Budget)
   0s └─────────────────────────────────────────────────
        50k        100k       200k       300k       500k  (Cumulative Stream Packets N)
 ```
 
 ### Quantitative Savings Ledger:
 
-| Metric | Naive Full-History Retraining | AEGIS Bounded Memory ($S4$) | Quantitative Saving |
+| Metric | Naive Full-History Retraining | Driftwood Bounded Memory ($S4$) | Quantitative Saving |
 | :--- | :---: | :---: | :---: |
 | **Retraining Latency ($N=500\text{k}$)** | $\sim 12.5\text{ seconds}$ | **$0.16\text{ seconds}$** | **$98.4\%$ Latency Reduction** |
 | **Memory Buffer Footprint** | $> 2,500\text{ MB}$ ($2.5\text{ GB}$) | **$12.4\text{ MB}$ (Bounded Bank)** | **$99.5\%$ Memory Saving** |
@@ -273,7 +273,7 @@ Retraining Latency (seconds)
 
 ## 8. The 5-Bucket Chronological Narrative (Simulation Slices)
 
-To make demonstrations reproducible and scientifically sound, AEGIS structures evaluation into 5 clear chronological windows:
+To make demonstrations reproducible and scientifically sound, Driftwood structures evaluation into 5 clear chronological windows:
 
 1. **Bucket 1: Baseline Calibration ($W_1$ — Monday)**
    * Traffic: Benign web browsing + baseline loud DoS & PortScan.
@@ -323,7 +323,7 @@ Every unit of the graduate MLOps curriculum is concretely implemented and verifi
 
 ### Q3: Why not simply retrain on all accumulated historical data?
 > **Model Answer:**  
-> "Retraining on all historical data has unbounded $\mathcal{O}(N)$ complexity. As millions of network packets accumulate, retraining latency grows from seconds to minutes or hours, and memory buffers overflow. By enforcing $B_{total} = 4,000$ samples, AEGIS guarantees constant $\mathcal{O}(1)$ retraining time of $0.16\text{s}$, achieving a $98.4\%$ compute saving while matching or exceeding full-history retention."
+> "Retraining on all historical data has unbounded $\mathcal{O}(N)$ complexity. As millions of network packets accumulate, retraining latency grows from seconds to minutes or hours, and memory buffers overflow. By enforcing $B_{total} = 4,000$ samples, Driftwood guarantees constant $\mathcal{O}(1)$ retraining time of $0.16\text{s}$, achieving a $98.4\%$ compute saving while matching or exceeding full-history retention."
 
 ### Q4: Why does Recent-Only retraining ($S2$) fail in enterprise cybersecurity?
 > **Model Answer:**  
@@ -339,7 +339,7 @@ Every unit of the graduate MLOps curriculum is concretely implemented and verifi
 
 When presenting this project to faculty, follow this 4-step demonstration flow:
 
-### Step 1: Open the AEGIS Executive Dashboard
+### Step 1: Open the Driftwood Executive Dashboard
 1. Ensure the frontend is active at **[http://127.0.0.1:5173/](http://127.0.0.1:5173/)**.
 2. Click through the **5 Chronological Buckets ($W_1$ to $W_5$)** at the top.
 3. Show that in **Bucket 3 ($W_3$)**, the KS test triggers a drift alert ($p = 0.0004$), whereas in **Bucket 2 ($W_2$)**, sub-threshold fluctuation correctly bypasses retraining, saving compute.

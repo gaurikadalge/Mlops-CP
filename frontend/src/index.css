@@ -5,7 +5,7 @@
     --bg-cloud: #f5f8ff;
     --card-white: #ffffff;
     --mist-blue: #e7f0ff;
-    --aegis-blue: #5288f5;
+    --driftwood-blue: #5288f5;
     --soft-lavender: #9b8afb;
     --calm-teal: #54cdb6;
     --muted-coral: #ff8294;
@@ -48,7 +48,7 @@
 }
 
 /* Card hover transitions */
-.aegis-card {
+.driftwood-card {
   background-color: #ffffff;
   border: 1px solid #e4eaf5;
   border-radius: 18px;
@@ -56,6 +56,6 @@
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.aegis-card:hover {
+.driftwood-card:hover {
   box-shadow: 0 8px 30px -4px rgba(82, 136, 245, 0.08);
 }
