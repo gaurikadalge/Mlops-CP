@@ -81,14 +81,37 @@
 ### Live demonstration sequence
 
 1. **Open the UI:** `http://127.0.0.1:5173/`
-   - Point out the Driftwood branding and the dashboard sections relevant to drift, strategy comparison, and explanations.
-2. **Open API documentation:** `http://127.0.0.1:8000/docs`
-   - Show `/health`, `/predict`, `/explain`, and `/metrics`.
-3. **Show model health:** `http://127.0.0.1:8000/health`
-   - Describe the loaded model and active strategy if available.
-4. **Explainability:** In Swagger, submit a valid feature payload to `/explain`.
-   - Point to the prediction and feature attributions. Explain that attributions support analyst review; they are not proof that a flow is malicious.
-5. **Optional operational view:** If Docker services are already available, show Prometheus/Grafana. Do not start optional services during the review unless they have been checked beforehand.
+   - Point out the Driftwood branding and the dual-mode operational switcher: **Live Threat Stream & Adaptation** vs. **Real-Time Strategy Face-Off (S1–S4)**.
+   - Emphasize to reviewers: *“We eliminated discrete, hardcoded window buttons in favor of continuous stream processing, reflecting real-world SecOps SIEM pipelines.”*
+
+2. **Run the 15-Second Guided Lifecycle Demo:**
+   - Click the shiny **`▶ Run Guided Demo (15s)`** button in the top action deck.
+   - Watch the system automatically progress through the 4-stage closed-loop lifecycle:
+     - **Stage 1 (Normal Baseline):** Traffic flows at steady rates, KS drift score is low (~0.021), and accuracy is optimal (~96.2%).
+     - **Stage 2 (Threat Infiltration):** Stealth attack packets arrive. The Kolmogorov-Smirnov score surges past the red threshold line (0.050) to 0.088, and live model accuracy plunges to 34.5%.
+     - **Stage 3 (4K Retraining Batch Formation):** The online pipeline triggers adaptation, forming a strict 4,000-sample retraining batch ($2,000$ recent threat samples $+ 2,000$ historical Wasserstein memory exemplars) and completing retraining in 0.16s ($O(1)$ constant compute).
+     - **Stage 4 (Adapted Steady State Restored):** The candidate model passes quality gates, promotes to production container (`:8000`), model accuracy recovers to 95.1%, and drift normalizes back to green (~0.023).
+   - Point out the **Dual Sliding Graphs**: the left graph tracks throughput and KS drift with the 0.05 threshold line, while the right graph shows the real-time accuracy degradation and rapid 0.16s recovery curve.
+   - Point out the **4,000-Sample Batch Formation Inspector**: shows how the 2K recent + 2K memory invariant prevents both memory explosion ($O(N)$) and catastrophic forgetting.
+
+3. **Switch to Mode 2: Real-Time Strategy Face-Off (S1 vs S2 vs S3 vs S4):**
+   - Click the **`Real-Time Strategy Face-Off (S1–S4)`** pill in the top header.
+   - Show the **Multi-Strategy Performance Trajectory Chart**:
+     - **S1 (Static):** Drops to 19.2% and never recovers (zero plasticity).
+     - **S2 (Recent-Only):** Recovers to 76.6% on the new attack, but when tested on historical holdout, plunges to 57.9% (**31.8% Catastrophic Forgetting**).
+     - **S3 (Full-History):** Preserves memory, but compute latency explodes past 12.5s as data volume increases ($O(N)$ computational bottleneck).
+     - **S4 (Driftwood Replay):** Achieves high adaptation (94.8%) and retention (94.2%) with < 1.6% forgetting under a strict $O(1)$ constant 0.16s retraining latency.
+   - Review the 4 comparative strategy cards and summary matrix table.
+
+4. **Open API documentation:** `http://127.0.0.1:8000/docs`
+   - Show `/health`, `/predict`, `/explain`, `/metrics`, and `/simulate_drift`.
+   - Point to `/simulate_drift` which allows live bidirectional synchronization between the dashboard UI and backend Prometheus metrics (`ids_drift_score`, `ids_drift_events_total`).
+
+5. **Explainability:** In Swagger or UI ticker, inspect TreeSHAP feature attributions.
+   - Point out which top features (e.g. `Flow Bytes/s`, `SYN Flag Count`, `Flow Duration`) drove the classification. Explain that attributions support analyst triage and auditability.
+
+6. **Operational Grafana Dashboard (Optional / Supplementary):**
+   - If Docker containers are running (`:3002`), show the live Grafana panel syncing metrics with 2s auto-refresh.
 
 ### Start commands, if needed
 
