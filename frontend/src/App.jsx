@@ -997,13 +997,11 @@ export default function App() {
                     <span>Driftwood Continual Adaptation & Observability Engine</span>
                     <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-semibold ${
                       activeOverviewMode === 'stream' 
-                        ? (isAutoDemoRunning 
-                            ? 'bg-[#E7F0FF] text-[#5288F5] border border-[#5288F5]/30 animate-pulse' 
-                            : (isStreaming ? 'bg-[#E7F8F2] text-[#2ba38d] border border-[#54CDB6]/30' : 'bg-[#FFF8DD] text-[#c99700] border border-[#FFE98A]/50'))
+                        ? (isStreaming ? 'bg-[#E7F8F2] text-[#2ba38d] border border-[#54CDB6]/30' : 'bg-[#FFF8DD] text-[#c99700] border border-[#FFE98A]/50')
                         : 'bg-[#F0EDFF] text-[#9B8AFB] border border-[#9B8AFB]/30'
                     }`}>
                       {activeOverviewMode === 'stream' 
-                        ? (isAutoDemoRunning ? '⚡ GUIDED 15s DEMO RUNNING' : (isStreaming ? '● LIVE STREAMING' : '○ STREAM PAUSED')) 
+                        ? (isStreaming ? '● LIVE STREAMING (2 flows/s)' : '○ STREAM PAUSED') 
                         : 'S1–S4 BENCHMARK FACE-OFF'}
                     </span>
                   </h3>
