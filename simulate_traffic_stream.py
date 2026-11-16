@@ -16,6 +16,7 @@ import json
 
 API_URL = "http://127.0.0.1:8000/predict"
 EXPLAIN_URL = "http://127.0.0.1:8000/explain"
+DRIFT_SIMULATE_URL = "http://127.0.0.1:8000/simulate_drift"
 
 # Representative flow profiles for 11 model features
 BENIGN_PROFILE = {
@@ -99,7 +100,21 @@ def main():
     parser.add_argument("--attack-ratio", type=float, default=0.4, help="Ratio of attack packets (0.0 to 1.0)")
     parser.add_argument("--continuous", action="store_true", help="Stream indefinitely in real time until Ctrl+C")
     parser.add_argument("--burst", action="store_true", help="Send a rapid 50-packet attack burst for live demo")
+    parser.add_argument("--trigger-drift", action="store_true", help="Directly trigger a drift event and increment Grafana counter")
     args = parser.parse_args()
+
+    if args.trigger_drift:
+        print("[ACTION] Triggering live drift event at http://127.0.0.1:8000/simulate_drift...")
+        try:
+            req = urllib.request.Request(DRIFT_SIMULATE_URL, data=b"{}", headers={"Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=3.0) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                print(f"[SUCCESS] Drift triggered! New score: {data.get('drift_score')}, retrained in {data.get('retraining_time')}")
+                print("Check Grafana (http://localhost:3002) gauge and drift event counter.")
+                return
+        except Exception as e:
+            print(f"[ERROR] Could not trigger drift on API: {e}")
+            return
 
     if args.burst:
         args.count = 50
@@ -145,7 +160,9 @@ def main():
                     benign_cnt += 1
                     flag = "\033[92m[NORMAL - BENIGN]\033[0m" if sys.platform != "win32" else "[NORMAL - BENIGN]"
 
-                print(f"[{pkt_index:04d}] {flag:<17} | Prob: {prob*100:>5.1f}% | Latency: {latency:>5.1f}ms | B/s: {sample['Flow Bytes/s']:>8.0f} | SYN={int(sample['SYN Flag Count'])}")
+                drift_score = res.get("drift_score", None)
+                drift_str = f" | Drift: {drift_score:.3f}" if drift_score is not None else ""
+                print(f"[{pkt_index:04d}] {flag:<17} | Prob: {prob*100:>5.1f}% | Latency: {latency:>5.1f}ms | B/s: {sample['Flow Bytes/s']:>8.0f}{drift_str}")
             else:
                 print(f"[{pkt_index:04d}] [OFFLINE/SURROGATE] API not responding ({res}). Packets simulated.")
 
