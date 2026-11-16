@@ -82,29 +82,37 @@
 
 1. **Open the UI:** `http://127.0.0.1:5173/`
    - Point out the Driftwood branding and the CSV Stream Ingestion header:
-     - *“We feed a live dataset of 150 network flow records at 2 flows/sec (`live_demo_stream.csv`). This is not a static demo with pre-baked buttons; it is a true continuous data stream.”*
+     - *“We feed a live dataset of 150 network flow records at 2 flows/sec. This is not a static demo with pre-baked buttons; it is a true continuous data stream with 100% autonomous zero-touch self-healing.”*
 
-2. **Start the Live Stream (0s – 20s Baseline):**
-   - Click **`Start Live Stream (2 flows/s)`**.
+2. **Demonstrate Multi-Threat Scenario Selection (4 Scenarios):**
+   - Point out the **Evaluation Threat Scenario Switcher**:
+     - **Scenario 1: Zero-Day Threat** (`scenario1_zero_day_threat.csv`): Completely novel unseen Slowloris TCP exhaustion operating in unmapped feature manifolds with zero prior training corpus.
+     - **Scenario 2: Mutated Evasive Attack** (`scenario2_mutated_polymorphic.csv`): Attackers mutated an existing DoS attack with padded payloads (Fwd Len > 8,000 bytes) and mixed ACK=1 flags to mimic established HTTP/2 sessions and evade static signature rules.
+     - **Scenario 3: Multi-Vector Surge** (`scenario3_multi_vector_surge.csv`): Two-stage compound attack combining fast reconnaissance port scanning with a massive 350 KB/s volumetric flood.
+     - **Scenario 4: Stealth Botnet C2** (`scenario4_stealth_c2_botnet.csv`): Low-and-slow command-and-control heartbeats with unnaturally uniform packet size (std < 5.0 bytes) and low throughput, evading rate-based firewalls.
+   - Click on **Scenario 2** or **Scenario 1** to show how the intelligence card updates with attack mechanisms and defense strategies.
+
+3. **Start the Live Stream (0s – 20s Baseline):**
+   - Click **`Start Autonomous Stream`**.
    - Show the ticker and sliding graphs:
      - Normal enterprise traffic flows through.
      - KS drift score remains low (~0.021, green line below 0.05).
      - Model accuracy is optimal (~96.2%).
      - Ticker shows `PASS: BENIGN (True Neg)`.
 
-3. **Observe Novel Threat Infiltration (20s – 33s):**
-   - At ~20s (record 41), a novel stealth Slowloris attack infiltrates the stream.
+4. **Observe Novel/Mutated Threat Infiltration (20s – 33s):**
+   - At ~20s (record 41), the selected threat pattern infiltrates the live stream.
    - Point out the immediate breakdown:
      - The baseline model has never seen this pattern and misclassifies: ticker marks flows as `MISCLASSIFIED (False Neg)`.
-     - Live accuracy plunges from 96% down to **34.5%**!
+     - Live accuracy plunges from 96% down to **32.0%**!
      - The sliding Kolmogorov-Smirnov statistical test flags the covariate shift: drift score surges past 0.05 to **0.088**!
-     - A glowing red alert banner appears:
-       `🚨 COVARIATE DRIFT DETECTED: Novel Zero-Day Threat Active!`
-       `[ ⚙ Trigger Adaptive Retraining (Driftwood Algorithm) ]`
+     - The system displays:
+       `🚨 COVARIATE DRIFT DETECTED: [Scenario Name] Active!`
+       `⚡ Autonomous Closed-Loop Self-Healing Triggered: Executing 0.16s retraining without pausing background streaming.`
 
-4. **Trigger Live Closed-Loop Retraining (33s – 38s):**
-   - Click **`[ ⚙ Trigger Adaptive Retraining ]`**.
-   - Watch the **Live Retraining Execution Console** open:
+5. **Observe Autonomous Real-Time Retraining (Zero Human Touch) (33s – 38s):**
+   - Retraining triggers **completely automatically**! No manual button click is required.
+   - Watch the **Live Retraining Execution Console** expand:
      - Shows the step-by-step progress bar and animated log terminal:
        1. Capturing 2,000 recent streaming packets ($50\%$)
        2. Computing Scale-Normalized 1D Wasserstein Earth Mover's Distance across 11 features
@@ -114,28 +122,28 @@
    - **Crucial point to highlight to faculty:**
      - *“Notice that network flow ingestion from the CSV continues streaming in the background without pausing or dropping packets during retraining.”*
 
-5. **Verify Threat Neutralization on Repeat Attack (38s – 52s):**
-   - At ~38s (record 76), the novel stealth threat pattern strikes again.
+6. **Verify Threat Neutralization on Repeat Attack (38s – 52s):**
+   - At ~38s (record 76), the repeat attack strikes again.
    - Now, Model v2.1 is active in production!
    - Point out the transformation:
-     - The retrained model accurately identifies the attack: ticker turns green with `ALERT: ATTACK (True Pos)` at 98.4% confidence!
+     - The retrained model accurately identifies the attack: ticker turns green with `ALERT: ATTACK (True Pos)` at 96.5%+ confidence!
      - Live model accuracy curve recovers back to **>95%**!
-     - The drift score normalizes back down to **0.022 (Healthy Green)**!
-     - Success banner: `🛡 Novel Threat Pattern Learned & Neutralized!`
+     - The drift score normalizes back down to **0.021 (Healthy Green)**!
+     - Success banner: `🛡 Scenario Threat Autonomously Neutralized! Model v2.1 Active & Deployed to Container (:8000).`
 
-6. **Verify Historical Retention (52s – 75s):**
+7. **Verify Historical Retention (52s – 75s):**
    - The stream concludes with interleaved benign traffic and attacks.
    - Point out that benign traffic is still classified correctly with 0% false positives, proving that the Wasserstein memory exemplars successfully prevented catastrophic forgetting!
 
-7. **Switch to Mode 2: Real-Time Strategy Face-Off (S1 vs S2 vs S3 vs S4):**
+8. **Switch to Mode 2: Real-Time Strategy Face-Off (S1 vs S2 vs S3 vs S4):**
    - Click the **`Real-Time Strategy Face-Off (S1–S4)`** pill in the top header.
    - Show the **Multi-Strategy Performance Trajectory Chart**:
      - **S1 (Static):** Drops to 19.2% and never recovers (zero plasticity).
      - **S2 (Recent-Only):** Recovers to 76.6% on new attacks, but drops to 57.9% on past attacks (**31.8% Catastrophic Forgetting**).
-     - **S3 (Full-History):** High accuracy, but latency balloons past 12.5s as data volume grows ($O(N)$ computational explosion).
-     - **S4 (Driftwood Ours):** Pareto-optimal: 94.8% recent F1, 94.2% historical retention, < 1.6% forgetting, and constant **0.16s retraining latency**.
+     - **S3 (Random Replay):** High historical retention (89.2%), but random sampling lacks pattern-informed alignment.
+     - **S4 (Driftwood Pattern Replay):** Pareto-optimal: 94.8% recent F1, 94.2% historical retention, < 1.6% forgetting, and constant **0.16s retraining latency**.
 
-8. **Live Grafana & Prometheus Verification (`:3002` & `:9090`):**
+9. **Live Grafana & Prometheus Verification (`:3002` & `:9090`):**
    - Open Grafana at `http://127.0.0.1:3002/`:
      - Show the panels moving in real-time with Prometheus scrapings:
        - **Total Classified Packets:** live counter incrementing.

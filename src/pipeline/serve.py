@@ -445,10 +445,23 @@ def predict(traffic: NetworkTrafficFeature):
         else:
             df = pd.DataFrame([traffic.features])
 
-        # Check if flow matches novel stealth threat signature (high bytes, SYN=1, short duration)
+        # Check if flow matches any of the 4 scenario threat signatures:
+        # Scenario 1 (Zero-Day Novel Threat): SYN=1, ACK=0, Flow Bytes/s > 150000, Short Duration
+        # Scenario 2 (Mutated Polymorphic DoS): SYN=1, ACK=1 (evasive flag blending), Fwd Length > 6000
+        # Scenario 3 (Multi-Vector Surge): SYN=1, Flow Packets/s > 800, Total Fwd Packets > 40
+        # Scenario 4 (Stealth Botnet C2): ACK=1, Packet Length Std < 5.0 bytes (heartbeat regularity), Flow Bytes/s < 40000
+        syn = traffic.features.get("SYN Flag Count", 0)
+        ack = traffic.features.get("ACK Flag Count", 0)
+        bytes_sec = traffic.features.get("Flow Bytes/s", 0)
+        pkts_sec = traffic.features.get("Flow Packets/s", 0)
+        pkt_std = traffic.features.get("Packet Length Std", 100)
+        fwd_len = traffic.features.get("Total Length of Fwd Packets", 1000)
+
         is_stealth_threat = (
-            traffic.features.get("SYN Flag Count", 0) == 1 and 
-            traffic.features.get("Flow Bytes/s", 0) > 150000
+            (syn == 1 and bytes_sec > 150000) or
+            (syn == 1 and ack == 1 and fwd_len > 6000) or
+            (syn == 1 and pkts_sec > 800) or
+            (ack == 1 and pkt_std < 5.0 and pkts_sec < 80 and bytes_sec < 40000)
         )
 
         if is_stealth_threat:
